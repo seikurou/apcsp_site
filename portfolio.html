@@ -29,9 +29,177 @@
             <li><a href="https://docs.google.com/document/d/1Wuq7Jzg5d88kj61CzeOkr_YtDik73I_AcpNtqbtQOA8/edit?usp=sharing" target="_blank">PLTW 1.2 Conclusion- Mobile App Design</a></li>
             <li><a href="https://docs.google.com/document/d/10GKrwZnMPDDhPVGMjz48Ox_mkChM1K6Vyx5a6JMihPw/edit?usp=sharing" target="_blank">PLTW 1.3 Conclusion- Algorithms in Python</a></li>
             <li><a href="https://docs.google.com/document/d/12SkIr6qXRRsdjvN2DbSx1CWgYi8Q8nrwRf4gkvaaZUM/edit?usp=sharing" target="_blank">PLTW 1.4 Conclusion- Images and Object-Oriented Libraries</a></li>
+            <li><a href="https://docs.google.com/document/d/1TDdVbgrhDe31zJx1tR9OuUM-uZGfzPFWt8hZeUoXEik/edit?usp=sharing" target="_blank">PLTW 1.5 Conclusion- GUI</a></li>
+        </ul>
         </ul>
        <p>Below are the activities for the AP CS Principles course taken Spring 2019</p>
         <!--<iframe allowtransparency="true" width = "485" height="402" src="//scratch.mit.edu/projects/287272932/" frameborder="0" allowfullscreen></iframe>-->
+        <h1>May 28, 2019- Tkinter GUI</h1>
+        <p>I used Canopy and the Tkinter library to make a Tic Tac Toe game. </p>
+        <img src="images/tictac.png" width="100%" alt="tictactoe gui screenshot">
+        <textarea rows="20" cols="100">
+import Tkinter
+import tkFont
+import numpy as np
+import sys
+import os
+class TicTacToe:
+  MOVENUMBERS = {(0,0):1, (0,1):2, (0,2):3, (1,0):4, (1,1):5, (1,2):6, (2,0):7, (2,1):8, (2,2):9}
+  INV_MOVENUMBERS = {v: k for k, v in MOVENUMBERS.items()}
+  PLAYERS = {0:"X", 1:"O"}
+  X = 0
+  O = 1
+  E = -1
+  
+  def __init__(self, grid=np.full((3,3), E)):
+    self.grid = grid
+    self.lastAttempt = None
+    self.lastValidMove = None
+    self.currentPlayer = self.X
+    self.gameOver = False
+    self.winner = "None"
+  
+  def toString(self, showMoveNumbers=True):
+    returnStr = ""
+    for row in range(len(self.grid)):
+      for col in range(len(self.grid[0])):
+        if self.grid[row][col] == self.X:
+          returnStr += "X "
+        elif self.grid[row][col] == self.O:
+          returnStr += "O "
+        elif showMoveNumbers:
+          returnStr += str(self.MOVENUMBERS[(row, col)]) + " "
+        else:
+          returnStr += "  "
+      returnStr += "\n"
+    return returnStr
+
+  def theMove(self, moveCoords):
+    self.makeMove(self.MOVENUMBERS[moveCoords])
+
+  def makeMove(self, moveNumber):
+    try:
+      moveNumber = int(moveNumber)
+      if not self.gameOver and self.getFromGrid(self.INV_MOVENUMBERS[moveNumber]) == self.E:
+        self.setGrid(self.INV_MOVENUMBERS[moveNumber], self.currentPlayer)
+        self.checkGameOver()
+        self.lastValidMove = moveNumber
+        self.lastAttempt = moveNumber
+        self.switchCurrentPlayer()
+        print("nice")
+      else:
+        self.lastAttempt = -1
+        print("not nice")
+    except:
+      self.lastAttempt = -1
+      print("not nice")
+
+
+  def setGrid(self, location, value):
+    self.grid[location[0]][location[1]] = value
+
+  def getFromGrid(self, location):
+    return self.grid[location[0]][location[1]]
+
+  def switchCurrentPlayer(self):
+    if self.currentPlayer == self.X:
+      self.currentPlayer = self.O
+    else:
+      self.currentPlayer = self.X
+
+  def checkGameOver(self):
+    if self.grid[1][1] != self.E and ((self.grid[0][0] == self.grid[1][1] and self.grid[0][0] == self.grid[2][2]) or (self.grid[2][0] == self.grid[1][1] and self.grid[2][0] == self.grid[0][2])):
+      self.gameOver = True
+      if(self.grid[1][1] == self.X):
+        self.winner = "X wins!"
+      else:
+        self.winner = "O wins!"
+      return
+    for i in range(3):
+      if ((self.grid[i][0] != self.E) and self.grid[i][0] == self.grid[i][1] and self.grid[i][0] == self.grid[i][2]) or ((self.grid[0][i] != self.E) and self.grid[0][i] == self.grid[1][i] and self.grid[0][i] == self.grid[2][i]):
+        self.gameOver = True
+        if(self.grid[i][i] == self.X):
+          self.winner = "X wins!"
+        else:
+          self.winner = "O wins!"
+        return
+    flag = True
+    for r in self.grid:
+        for c in r:
+            if c == -1:
+                flag = False
+    if flag:
+        self.gameOver = True
+        self.winner = "It's a tie!"
+class TicTacButton(Tkinter.Button, object):
+    
+    def __init__(self, root, game, r, c, label, text, padx, pady, font):
+
+        super(TicTacButton, self).__init__(root, text=text, padx=padx, pady=pady, font=font, width=6, height=3, command=lambda: move(self)) 
+        self.game = game
+        self.row = r
+        self.col = c
+        self.label = label
+        def move(self):
+            game.makeMove(TicTacToe.MOVENUMBERS[(self.row, self.col)])
+            print(game.lastAttempt)
+            if(game.lastAttempt != -1):
+                if TicTacToe.PLAYERS[game.currentPlayer] == "X":
+                    label.config(text="X's turn")
+                    self.config(text="O")
+
+                else:
+                    label.config(text="O's turn")
+                    self.config(text="X")
+
+        
+            if game.gameOver:
+                label.config(text=game.winner)
+                
+    
+
+
+game = TicTacToe()
+
+    
+root = Tkinter.Tk()
+f36 = tkFont.Font(family="Times New Roman", size=36)
+label = Tkinter.Label(root, text="Welcome to Tic Tac Toe!\nX goes first", width=25)
+label.grid(row=1, column=3)
+# 
+# def move(button):
+#     # button.config(text= (str(button.cget(row)) + " " + str(button.cget(column))))
+#     button.config(text="nope")
+
+
+
+buttons = []
+for r in range(3):
+    row = []
+    for c in range(3):
+        button = TicTacButton(root, game, r, c, label, text="--", padx=10, pady=10, font=f36)
+        # button.config(command=lambda: move(button))
+        button.grid(row=r, column=c, padx=20, pady=20)
+        # button.config(text="no")
+        row += [button]
+    buttons += [row]
+# buttons[0][0].config(text="yes")
+def reset():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+    # global game
+    # global buttons
+    # for r in buttons:
+    #     for c in r:
+    #         c.config(text="--")
+resetButton = Tkinter.Button(root, text="Reset", command=reset)
+resetButton.grid(row=2, column=3)
+
+
+
+
+root.mainloop()
+        </textarea>
         <h1>May 14, 2019- Image Manipulation</h1>
         <p>I used Canopy and the Python Imaging Library to manipulate an image of a raccoon.</p>
        <img src="images/imageManipRaccoons.png" width="100%" alt="collage of raccoons">
