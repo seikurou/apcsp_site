@@ -39,6 +39,32 @@
         <p>Question: What is the median match time for challenger matches in 2018?</p>
         <img src="images/tennisDist.png" width="100%" alt="histogram of Challenger match times in 2018">
         <p>To answer the question, we gathered all the individual match times and created a histogram with 35 bins and a range of 0 to 300 minutes. Then we found the peak of the histogram and noted the corresponding value on the x-axis. We conclude the median match time for challenger matches in 2018 was about 70 minutes.</p>
+         <textarea rows="20" cols="100">
+import csv
+import matplotlib.pyplot as plt
+
+with open('E:/qualchall2018.csv') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    
+    x = []
+    y = []
+    
+    headers = spamreader.next()
+    dictionary = {}
+    i = 0
+    for entry in headers:
+        dictionary[entry] = i
+        i += 1
+    
+    for row in spamreader:
+        b = row[dictionary["minutes"]]
+        c = row[dictionary["w_ace"]]
+        if str(b) != '' and str(c) != '' and float(b) < 300:
+            x += [float(b)]
+            y += [float(c)]
+    plt.hist(x, bins=35)
+    plt.show()
+           </textarea>
         <h1>May 28, 2019- Tkinter GUI</h1>
         <p>I used Canopy and the Tkinter library to make a Tic Tac Toe game. </p>
         <img src="images/tictac.png" width="100%" alt="tictactoe gui screenshot">
