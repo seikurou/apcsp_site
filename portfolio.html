@@ -34,6 +34,61 @@
         </ul>
        <p>Below are the activities for the AP CS Principles course taken Spring 2019</p>
         <!--<iframe allowtransparency="true" width = "485" height="402" src="//scratch.mit.edu/projects/287272932/" frameborder="0" allowfullscreen></iframe>-->
+        <h1>June 7, 2019- NetLogo Web Modification</h1>
+        <p>We manipulated an existing NetLogo program that created star fractals. We changed the color for the stars as well as the change in angle as the turtles step deeper into the recursion.</p>
+        <p>The output of the original program:</p>
+        <img src="images/fractalBefore.png" width="100%" alt="the NetLogo program before">
+        <p>The output of the modified program:</p>
+        <img src="images/fractalAfter.png" width="100%" alt="the NetLogo program after modification">
+        <textarea rows="20" cols="100">
+turtles-own [
+  moves         ;; how many sides the turtles has drawn so far
+  star-side     ;; The length of the side that the turtle is drawing
+  generation    ;; How many generations of turtles have come before it.  So,
+]               ;; if the turtle was hatched from a turtle that was hatched
+                ;; by another turtle, it's generation is 2
+
+to setup
+  clear-all
+  create-turtles 1 [
+    set size 8                    ;; so turtles are easy to see
+    set ycor max-pycor * 0.9      ;; place near top of world
+    set star-side ycor * 1.97538  ;; length of the sides of the star it will draw
+    pen-down
+    set heading 180 + 18
+    recolor
+  ]
+  reset-ticks
+end
+
+to go
+  if not any? turtles [ stop ]
+  ask turtles [
+    fd star-side
+    rt 180 + 36
+    if generation < fractal-level [      ;; If it's not drawing at the deepest level of the figure,
+      hatch 1 [                          ;;  hatch a new turtle to draw at a lower level
+        set generation generation + 1
+        set star-side star-side / 2
+        recolor
+        set moves 0
+        rt 0
+      ]
+    ]
+    set moves moves + 1
+    if moves > 5 [ die ]        ;; When the turtle has completed its star, it's done
+  ]
+  tick
+end
+
+to recolor  ;; turtle procedure
+  set color scale-color yellow (fractal-level - generation) -1 (fractal-level + 1)
+end
+
+
+; Copyright 1999 Uri Wilensky.
+; See Info tab for full copyright and license.
+        </textarea>
         <h1>June 3, 2019- Matplot Data Analysis</h1>
         <p>I used Canopy and the Matplot library to create a histogram showing the frequency distribution of match times using a csv file.</p>
         <p>Question: What is the median match time for challenger matches in 2018?</p>
