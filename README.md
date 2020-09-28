@@ -1,4 +1,4 @@
-https://seikurou.github.io/cspsite/
+https://seikurou.github.io/apcsp_site/
 
 Website detailing projects of AP Computer Science Principles, taken in Spring 2019.
 
